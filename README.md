@@ -1,5 +1,5 @@
 # My-SICP-solutions
-My solutions for the book "Structure and Interpretation of Computer Programs" written in Haskell. 
+My solutions for the programming exercises in the book "Structure and Interpretation of Computer Programs" written in Haskell. 
 
 I'm currently working through chapter 2. Will update as I go on. I'm also missing a couple of questions in chapter 1, so I'll update when I've covered FileIO in Haskell.
 
