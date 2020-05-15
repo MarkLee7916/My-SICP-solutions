@@ -264,15 +264,17 @@ frac_helper n d k total = if (k == 1) then total
 
 
 --Ex 1.38, modified to deal with list inputs rather than fixed values
-cont_frac_list :: [Double] -> [Double] -> Int -> Double
+type Series = [Double]
+
+cont_frac_list :: Series -> Series -> Int -> Double
 cont_frac_list (ni:n) (di:d) k = if (k == 1) then ni / di
                                  else ni / (di + cont_frac_list n d (k - 1))
 
-generate_sequence :: Int -> Double -> [Double]
+generate_sequence :: Int -> Double -> Series
 generate_sequence counter add = if (counter `mod` 3 == 0) then add:(generate_sequence (counter + 1) (add + 2))
                                 else 1:(generate_sequence (counter + 1) add)
 
-di :: [Double]
+di :: Series
 di = 1:(generate_sequence 0 2)
 
 e_sicp :: Double
@@ -280,7 +282,7 @@ e_sicp = let repetitions = 10000 in cont_frac_list (cycle [1]) di repetitions + 
 
 
 --Ex 1.39, modified to be more generic, have to pass in a function to decide how to combine fractions
-cont_frac_list_generic :: [Double] -> [Double] -> (Double -> Double -> Double) -> Int -> Double
+cont_frac_list_generic :: Series -> Series -> (Double -> Double -> Double) -> Int -> Double
 cont_frac_list_generic (ni:n) (di:d) f k = if (k == 1) then ni / di
                                            else ni / (f di (cont_frac_list_generic n d f (k - 1)))
 
