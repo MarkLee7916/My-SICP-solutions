@@ -13,8 +13,8 @@ numer (Pair x y) = x
 denom :: Pair -> Int
 denom (Pair x y) = y
 
-make_rat :: Int -> Int -> Pair
-make_rat n d = Pair numerator denominator
+makeRat :: Int -> Int -> Pair
+makeRat n d = Pair numerator denominator
 
                where divisor = gcd n d
                      numerator = if ((n < 0) `xor` (d < 0)) then ((-1) * abs n) `div` divisor else (abs n) `div` divisor
@@ -27,108 +27,108 @@ data Point = Point Double Double deriving (Show, Eq)
 data Segment = Segment Point Point deriving (Show, Eq)
 
 --API
-make_point :: Double -> Double -> Point
-make_point = Point 
+makePoint :: Double -> Double -> Point
+makePoint = Point 
 
-x_point :: Point -> Double
-x_point (Point x y) = x
+xPoint :: Point -> Double
+xPoint (Point x y) = x
 
-y_point :: Point -> Double
-y_point (Point x y) = y
+yPoint :: Point -> Double
+yPoint (Point x y) = y
 
-make_segment :: Point -> Point -> Segment
-make_segment x y = Segment x y
+makeSegment :: Point -> Point -> Segment
+makeSegment x y = Segment x y
 
 --Example of functions that use pattern matching. While the book uses selectors that provide a layer of abstraction over the underlying representation,
 --I opted to use pattern matching in some cases because of how clean and concise it makes the code. Pattern matched code is really easy to reason about and find mistakes in.
 --I
-start_segment :: Segment -> Point
-start_segment (Segment x y) = x
+startSegment :: Segment -> Point
+startSegment (Segment x y) = x
 
-end_segment :: Segment -> Point
-end_segment (Segment x y) = y
+endSegment :: Segment -> Point
+endSegment (Segment x y) = y
 
 -- Example of a function that doesn't use pattern matching, much less concise
 midpoint :: Segment -> Point
-midpoint segment = make_point x_average y_average
+midpoint segment = makePoint xAverage yAverage
                    
-                   where x_average = (average (x_point (start_segment segment)) (x_point (end_segment segment)))
-                         y_average = (average (y_point (start_segment segment)) (y_point (end_segment segment)))
+                   where xAverage = (average (xPoint (startSegment segment)) (xPoint (endSegment segment)))
+                         yAverage = (average (yPoint (startSegment segment)) (yPoint (endSegment segment)))
 
 
 --Ex 2.3 -----------------------------------------------------------------------------------------------------------------
 --Raw data
 data Rectangle = Rectangle Point Point Point Point deriving (Eq, Show)
-data Rectangle_alt = Rectangle_alt Point Double Double deriving (Eq, Show)
+data RectangleAlt = RectangleAlt Point Double Double deriving (Eq, Show)
 
 --First implementation
-make_rectangle :: Point -> Point -> Point -> Point -> Rectangle
-make_rectangle = Rectangle
+makeRectangle :: Point -> Point -> Point -> Point -> Rectangle
+makeRectangle = Rectangle
 
-top_left_rectangle :: Rectangle -> Point
-top_left_rectangle (Rectangle x y a b) = x
+topLeftRectangle :: Rectangle -> Point
+topLeftRectangle (Rectangle x y a b) = x
 
-top_right_rectangle :: Rectangle -> Point
-top_right_rectangle (Rectangle x y a b) = y
+topRightRectangle :: Rectangle -> Point
+topRightRectangle (Rectangle x y a b) = y
 
-bottom_left_rectangle :: Rectangle -> Point
-bottom_left_rectangle (Rectangle x y a b) = a
+bottomLeftRectangle :: Rectangle -> Point
+bottomLeftRectangle (Rectangle x y a b) = a
 
-bottom_right_rectangle :: Rectangle -> Point
-bottom_right_rectangle (Rectangle x y a b) = b
+bottomRightRectangle :: Rectangle -> Point
+bottomRightRectangle (Rectangle x y a b) = b
 
-x_length :: Rectangle -> Double
-x_length(Rectangle (Point i o) (Point q w) a b)  = abs (i - q) + abs (o - w) 
+xLength :: Rectangle -> Double
+xLength(Rectangle (Point i o) (Point q w) a b)  = abs (i - q) + abs (o - w) 
 
-y_length :: Rectangle -> Double
-y_length (Rectangle (Point i o) y (Point q w) b) = abs (i - q) + abs (o - w) 
+yLength :: Rectangle -> Double
+yLength (Rectangle (Point i o) y (Point q w) b) = abs (i - q) + abs (o - w) 
 
 --Second implementation
-make_rectangle_alt :: Point -> Double -> Double -> Rectangle_alt
-make_rectangle_alt = Rectangle_alt
+makeRectangleAlt :: Point -> Double -> Double -> RectangleAlt
+makeRectangleAlt = RectangleAlt
 
-x_length_alt :: Rectangle_alt -> Double
-x_length_alt (Rectangle_alt _ x_size _) = x_size
+xLengthAlt :: RectangleAlt -> Double
+xLengthAlt (RectangleAlt _ xSize _) = xSize
 
-y_length_alt :: Rectangle_alt -> Double
-y_length_alt (Rectangle_alt _ _ y_size) = y_size
+yLengthAlt :: RectangleAlt -> Double
+yLengthAlt (RectangleAlt _ _ ySize) = ySize
 
 -- General abstract functions that apply to both implementations
-perimeter :: Rectangle_alt -> Double
-perimeter rect = (x_length_alt rect) * 2 + (y_length_alt rect) * 2
+perimeter :: RectangleAlt -> Double
+perimeter rect = (xLengthAlt rect) * 2 + (yLengthAlt rect) * 2
 
-area :: Rectangle_alt -> Double
-area rect = (x_length_alt rect) * (y_length_alt rect)
+area :: RectangleAlt -> Double
+area rect = (xLengthAlt rect) * (yLengthAlt rect)
 
 
 --Ex 2.4 -----------------------------------------------------------------------------------------------------------------
 type EncodedDataInFunction = ((Int -> Int -> Int) -> Int)
 
-cons_sicp :: Int -> Int -> EncodedDataInFunction
-cons_sicp  x y = (\m -> m x y)
+consSicp :: Int -> Int -> EncodedDataInFunction
+consSicp  x y = (\m -> m x y)
 
-car_sicp  :: EncodedDataInFunction -> Int
-car_sicp  c = c (\p q -> p)
+carSicp  :: EncodedDataInFunction -> Int
+carSicp  c = c (\p q -> p)
 
-cdr_sicp  :: EncodedDataInFunction -> Int
-cdr_sicp  c = c (\p q -> q)
+cdrSicp  :: EncodedDataInFunction -> Int
+cdrSicp  c = c (\p q -> q)
 
 
 --Ex 2.5 -----------------------------------------------------------------------------------------------------------------
-cons_alt :: Int -> Int -> Int
-cons_alt a b = 2 ^ a * 3 ^ b
+consAlt :: Int -> Int -> Int
+consAlt a b = 2 ^ a * 3 ^ b
 
-car_alt :: Int -> Int
-car_alt y = if (is_root y 2) then (floor_log 2 y)            
-            else car_alt (y `div` 3)
+carAlt :: Int -> Int
+carAlt y = if (isRoot y 2) then (floorLog 2 y)            
+            else carAlt (y `div` 3)
 
-cdr_alt :: Int -> Int
-cdr_alt y = if (is_root y 3) then (floor_log 3 y)            
-            else cdr_alt (y `div` 2)
+cdrAlt :: Int -> Int
+cdrAlt y = if (isRoot y 3) then (floorLog 3 y)            
+            else cdrAlt (y `div` 2)
 
-is_root x n = if (x == 1) then True 
+isRoot x n = if (x == 1) then True 
               else if (x `mod` n /= 0) then False 
-              else is_root (x `div` n) n
+              else isRoot (x `div` n) n
 
 --Ex 2.6 NOT DONE YET ----------------------------------------------------------------------------------------------------------------------------------------------------------
 zero :: (a -> a) -> a -> a
@@ -149,171 +149,171 @@ add f g = undefined
 data Interval = Interval Double Double deriving (Eq, Show)
 
 --API
-make_interval :: Double -> Double -> Interval
-make_interval x y = Interval (min x y) (max x y)
+makeInterval :: Double -> Double -> Interval
+makeInterval x y = Interval (min x y) (max x y)
 
-lower_bound :: Interval -> Double
-lower_bound (Interval a b) = a
+lowerBound :: Interval -> Double
+lowerBound (Interval a b) = a
 
-upper_bound :: Interval -> Double
-upper_bound (Interval a b) = b
+upperBound :: Interval -> Double
+upperBound (Interval a b) = b
 
 width :: Interval -> Double
 width (Interval x y) = 0.5 * (y - x)
 
 
 --Ex 2.8 -----------------------------------------------------------------------------------------------------------------
-sub_interval :: Interval -> Interval -> Interval
-sub_interval (Interval l1 u1) (Interval l2 u2) = make_interval (l1 - u2) (u1 - l2)
+subInterval :: Interval -> Interval -> Interval
+subInterval (Interval l1 u1) (Interval l2 u2) = makeInterval (l1 - u2) (u1 - l2)
 
 
 --Ex 2.9 -----------------------------------------------------------------------------------------------------------------
-mul_interval :: Interval -> Interval -> Interval
-mul_interval (Interval l1 u1) (Interval l2 u2) = Interval (min_list combinations) (max_list combinations)
+mulInterval :: Interval -> Interval -> Interval
+mulInterval (Interval l1 u1) (Interval l2 u2) = Interval (minimum combinations) (maximum combinations)
 
                                                  where combinations = [l1 * l2, l1 * u2, u1 * l2, u1 * u2]
 
-div_interval :: Interval -> Interval -> Interval
-div_interval x (Interval l2 u2) = mul_interval x (make_interval (1 / l2) (1 / u2))
+divInterval :: Interval -> Interval -> Interval
+divInterval x (Interval l2 u2) = mulInterval x (makeInterval (1 / l2) (1 / u2))
 
 --Example for mult, arguments are of the same width but returns different values
-mul1 = mul_interval (Interval 2.5 3.6) (Interval 3.2 4.8)
-mul2 = mul_interval (Interval 1.2 2.3) (Interval 1.9 3.5)
-is_same_mul = width mul1 == width mul2
+mul1 = mulInterval (Interval 2.5 3.6) (Interval 3.2 4.8)
+mul2 = mulInterval (Interval 1.2 2.3) (Interval 1.9 3.5)
+isSameMul = width mul1 == width mul2
 
 --Example for div, again arguments are of the same width but returns different values
-div1 = div_interval (Interval 2.5 3.6) (Interval 3.2 4.8)
-div2 = div_interval (Interval 1.2 2.3) (Interval 1.9 3.5)
-is_same_div = width div1 == width div2
+div1 = divInterval (Interval 2.5 3.6) (Interval 3.2 4.8)
+div2 = divInterval (Interval 1.2 2.3) (Interval 1.9 3.5)
+isSameDiv = width div1 == width div2
 
 
 --Ex 2.10 ----------------------------------------------------------------------------------------------------------------
-div_interval_zero_check :: Interval -> Interval -> Interval
-div_interval_zero_check x (Interval l2 u2) = if (l2 == 0 || u2 == 0) then error "Can't divide an interval that spans zero"
-                                             else mul_interval x (make_interval (1 / l2) (1 / u2))
+divIntervalZeroCheck :: Interval -> Interval -> Interval
+divIntervalZeroCheck x (Interval l2 u2) = if (l2 == 0 || u2 == 0) then error "Can't divide an interval that spans zero"
+                                             else mulInterval x (makeInterval (1 / l2) (1 / u2))
 
 
 --Ex 2.11 ----------------------------------------------------------------------------------------------------------------
-mul_interval_cases :: Interval -> Interval -> Interval
-mul_interval_cases (Interval l1 u1) (Interval l2 u2) | l1 < 0 && u1 < 0 && l2 < 0 && u2 < 0 = Interval (u1 * u2) (l1 * l2)
-                                                     | l1 > 0 && u1 > 0 && l2 > 0 && u2 > 0 = Interval (l1 * l2) (u1 * u2) 
-                                                     | l1 < 0 && u1 < 0 && l2 > 0 && u2 > 0 = Interval (l1 * u2) (u1 * l2)
-                                                     | l1 > 0 && u1 > 0 && l2 < 0 && u2 < 0 = Interval (u1 * l2) (l1 * u2)
-                                                     | l1 > 0 && u1 > 0 && l2 < 0 && u2 > 0 = Interval (u1 * l2) (u1 * u2)
-                                                     | l1 < 0 && u1 > 0 && l2 > 0 && u2 > 0 = Interval (u2 * l1) (u2 * u1)
-                                                     | l1 < 0 && u1 > 0 && l2 < 0 && u2 < 0 = Interval (u1 * l2) (l1 * l2)
-                                                     | l1 < 0 && u1 < 0 && l2 < 0 && u2 > 0 = Interval (u2 * l1) (l2 * l1)             
+mulIntervalCases :: Interval -> Interval -> Interval
+mulIntervalCases (Interval l1 u1) (Interval l2 u2) | l1 < 0 && u1 < 0 && l2 < 0 && u2 < 0 = Interval (u1 * u2) (l1 * l2)
+                                                   | l1 > 0 && u1 > 0 && l2 > 0 && u2 > 0 = Interval (l1 * l2) (u1 * u2) 
+                                                   | l1 < 0 && u1 < 0 && l2 > 0 && u2 > 0 = Interval (l1 * u2) (u1 * l2)
+                                                   | l1 > 0 && u1 > 0 && l2 < 0 && u2 < 0 = Interval (u1 * l2) (l1 * u2)
+                                                   | l1 > 0 && u1 > 0 && l2 < 0 && u2 > 0 = Interval (u1 * l2) (u1 * u2)
+                                                   | l1 < 0 && u1 > 0 && l2 > 0 && u2 > 0 = Interval (u2 * l1) (u2 * u1)
+                                                   | l1 < 0 && u1 > 0 && l2 < 0 && u2 < 0 = Interval (u1 * l2) (l1 * l2)
+                                                   | l1 < 0 && u1 < 0 && l2 < 0 && u2 > 0 = Interval (u2 * l1) (l2 * l1)             
 
                                                      -- Case where more than 2 multiplications are needed
-                                                     | l1 < 0 && u1 > 0 && l2 < 0 && u2 > 0 = Interval (min (l1 * u2) (l2 * u1)) (max (l2 * u2) (l1 * l2))
+                                                   | l1 < 0 && u1 > 0 && l2 < 0 && u2 > 0 = Interval (min (l1 * u2) (l2 * u1)) (max (l2 * u2) (l1 * l2))
 
 
 --Ex 2.12 ----------------------------------------------------------------------------------------------------------------
-make_center_percent :: Double -> Double -> Interval 
-make_center_percent center tolerance = make_interval lower_bound upper_bound
+makeCenterPercent :: Double -> Double -> Interval 
+makeCenterPercent center tolerance = makeInterval lowerBound upperBound
 
                                        where toleranceAsDecimal = tolerance / 100
-                                             lower_bound = center - (toleranceAsDecimal * center)
-                                             upper_bound = center + (toleranceAsDecimal * center)
+                                             lowerBound = center - (toleranceAsDecimal * center)
+                                             upperBound = center + (toleranceAsDecimal * center)
 
 
 --Ex 2.14 ----------------------------------------------------------------------------------------------------------------
-add_interval :: Interval -> Interval -> Interval
-add_interval (Interval l1 u1) (Interval l2 u2) = make_interval (l1 + l2) (u1 + u2)
+addInterval :: Interval -> Interval -> Interval
+addInterval (Interval l1 u1) (Interval l2 u2) = makeInterval (l1 + l2) (u1 + u2)
 
 par1 :: Interval -> Interval -> Interval
-par1 r1 r2 = (mul_interval r1 r2) `div_interval` (add_interval r1 r2)
+par1 r1 r2 = (mulInterval r1 r2) `divInterval` (addInterval r1 r2)
 
 par2 :: Interval -> Interval -> Interval
-par2 r1 r2 = one `div_interval` ((one `div_interval` r1) `add_interval` (one `div_interval` r2))
+par2 r1 r2 = one `divInterval` ((one `divInterval` r1) `addInterval` (one `divInterval` r2))
 
-             where one = make_interval 1 1
+             where one = makeInterval 1 1
 
-is_equal_test1 :: Bool
-is_equal_test1 = par1 (make_interval 9.9 10) (make_interval 11.7 12) == par2 (make_interval 9.9 10) (make_interval 11.7 12)
+isEqualTest1 :: Bool
+isEqualTest1 = par1 (makeInterval 9.9 10) (makeInterval 11.7 12) == par2 (makeInterval 9.9 10) (makeInterval 11.7 12)
 
-is_equal_test2 :: Bool
-is_equal_test2 = par1 (make_interval 1 2) (make_interval 3 4) == par2 (make_interval 1 2) (make_interval 3 4)
+isEqualTest2 :: Bool
+isEqualTest2 = par1 (makeInterval 1 2) (makeInterval 3 4) == par2 (makeInterval 1 2) (makeInterval 3 4)
 
-is_equal_test3 :: Bool
-is_equal_test3 = par1 (make_interval 9.99 10) (make_interval 11.78 12) == par2 (make_interval 9.99 10) (make_interval 11.78 12)
+isEqualTest3 :: Bool
+isEqualTest3 = par1 (makeInterval 9.99 10) (makeInterval 11.78 12) == par2 (makeInterval 9.99 10) (makeInterval 11.78 12)
 
 
 --Ex 2.17 ----------------------------------------------------------------------------------------------------------------
-last_pair :: [a] -> a
-last_pair xs = if (null xs) then error "No last element in an empty list"
+lastPair :: [a] -> a
+lastPair xs = if (null xs) then error "No last element in an empty list"
                else if null $ cdr xs then car xs
-               else last_pair $ cdr xs
+               else lastPair $ cdr xs
 
 --Ex 2.18 ----------------------------------------------------------------------------------------------------------------
-reverse_sicp :: [a] -> [a]
-reverse_sicp xs = if (null xs) then xs
-                  else (reverse_sicp $ cdr xs) ++ [car xs]
+reverseSicp :: [a] -> [a]
+reverseSicp xs = if (null xs) then xs
+                  else (reverseSicp $ cdr xs) ++ [car xs]
 
 
 --Ex 2.19 ----------------------------------------------------------------------------------------------------------------
-first_denomination :: (Num a) => [a] -> a
-first_denomination = car 
+firstDenomination :: (Num a) => [a] -> a
+firstDenomination = car 
 
-except_first_denomination :: (Num a) => [a] -> [a]
-except_first_denomination = cdr
+exceptFirstDenomination :: (Num a) => [a] -> [a]
+exceptFirstDenomination = cdr
 
-no_more :: (Num a) => [a] -> Bool
-no_more = null
+noMore :: (Num a) => [a] -> Bool
+noMore = null
 
 
 --Ex 2.20 ----------------------------------------------------------------------------------------------------------------
-same_parity :: [Int] -> [Int]
-same_parity xs = filter (\n -> n `mod` 2 == (car xs) `mod` 2) xs
+sameParity :: [Int] -> [Int]
+sameParity xs = filter (\n -> n `mod` 2 == (car xs) `mod` 2) xs
 
 
 --Ex 2.21 ----------------------------------------------------------------------------------------------------------------
-square_list :: (Num a) => [a] -> [a]
-square_list xs = if (null xs) then []
-                 else (square $ car xs):(square_list $ cdr xs)
+squareList :: (Num a) => [a] -> [a]
+squareList xs = if (null xs) then []
+                 else (square $ car xs):(squareList $ cdr xs)
 
-square_list_map :: (Num a) => [a] -> [a]
-square_list_map = map (^2)
+squareListMap :: (Num a) => [a] -> [a]
+squareListMap = map (^2)
 
 
 --Ex 2.23 ----------------------------------------------------------------------------------------------------------------
-for_each [] _ = do 
+forEach [] _ = do 
              return ()
 
-for_each xs f = do
+forEach xs f = do
              f $ car xs
-             for_each (cdr xs) f
+             forEach (cdr xs) f
 
 
 --Ex 2.27 ----------------------------------------------------------------------------------------------------------------
 -- The Tree data type is essentially a stand in for Lisps 'list of lists' idea, which doesn't have a built-in equivalent in Haskell
--- 'append_tree' stands in for Lisps 'append'. It's basically Haskell's ++ operator for the tree datatype
+-- 'appendTree' stands in for Lisps 'append'. It's basically Haskell's ++ operator for the tree datatype
 
 data Tree a = Leaf a | Node [Tree a] deriving (Read, Show, Eq)
 
 instance Functor Tree where 
     fmap f (Leaf a) = Leaf $ f a
     fmap _ (Node []) = Node []
-    fmap f (Node (x:xs)) = (fmap f x) `append_tree` (fmap f $ Node xs)
+    fmap f (Node (x:xs)) = (fmap f x) `appendTree` (fmap f $ Node xs)
 
-deep_reverse :: Tree a -> Tree a
-deep_reverse (Leaf a) = Leaf a
-deep_reverse (Node []) = Node []
-deep_reverse (Node (x:[])) = Node (x:[])
-deep_reverse (Node (x:xs)) = (deep_reverse $ Node xs) `append_tree` (deep_reverse x)
+deepReverse :: Tree a -> Tree a
+deepReverse (Leaf a) = Leaf a
+deepReverse (Node []) = Node []
+deepReverse (Node (x:[])) = Node (x:[])
+deepReverse (Node (x:xs)) = (deepReverse $ Node xs) `appendTree` (deepReverse x)
 
-append_tree :: Tree a -> Tree a -> Tree a
-append_tree (Leaf x) (Leaf y) = Node ([Leaf x] ++ [Leaf y])
-append_tree (Node xs) (Leaf y) = Node (xs ++ [Leaf y])
-append_tree (Leaf x) (Node ys) = Node ((Leaf x):ys)
-append_tree (Node xs) (Node ys) = Node (xs ++ ys)
+appendTree :: Tree a -> Tree a -> Tree a
+appendTree (Leaf x) (Leaf y) = Node ([Leaf x] ++ [Leaf y])
+appendTree (Node xs) (Leaf y) = Node (xs ++ [Leaf y])
+appendTree (Leaf x) (Node ys) = Node ((Leaf x):ys)
+appendTree (Node xs) (Node ys) = Node (xs ++ ys)
 
 
 --Ex 2.28 ----------------------------------------------------------------------------------------------------------------
 fringe :: Tree a -> Tree a
 fringe (Leaf a) = Leaf a
 fringe (Node []) = Node []
-fringe (Node (x:xs)) = x `append_tree` (fringe $ Node xs)
+fringe (Node (x:xs)) = x `appendTree` (fringe $ Node xs)
 
 
 --Ex 2.29 ----------------------------------------------------------------------------------------------------------------
@@ -322,58 +322,58 @@ data BinaryMobile = BinaryMobile Branch Branch deriving (Eq, Read, Show)
 data Branch = RecursiveMobile Int BinaryMobile | Weight Int Int deriving (Eq, Read, Show)
 
 --Selectors
-make_mobile :: Branch -> Branch -> BinaryMobile
-make_mobile left right = BinaryMobile left right
+makeMobile :: Branch -> Branch -> BinaryMobile
+makeMobile left right = BinaryMobile left right
 
-left_branch :: BinaryMobile -> Branch
-left_branch (BinaryMobile x y) = x
+leftBranch :: BinaryMobile -> Branch
+leftBranch (BinaryMobile x y) = x
 
-right_branch :: BinaryMobile -> Branch
-right_branch (BinaryMobile x y) = y
+rightBranch :: BinaryMobile -> Branch
+rightBranch (BinaryMobile x y) = y
 
-branch_length :: Branch -> Int
-branch_length (RecursiveMobile length _) = length
-branch_length (Weight length _) = length
+branchLength :: Branch -> Int
+branchLength (RecursiveMobile length _) = length
+branchLength (Weight length _) = length
 
-branch_structure :: Branch -> (Either Int BinaryMobile)
-branch_structure (Weight _ val) = Left val
-branch_structure (RecursiveMobile _ mobile) = Right mobile
+branchStructure :: Branch -> (Either Int BinaryMobile)
+branchStructure (Weight _ val) = Left val
+branchStructure (RecursiveMobile _ mobile) = Right mobile
 
 --Compute functions
-total_weight_mobile :: BinaryMobile -> Int
-total_weight_mobile (BinaryMobile left right) = total_weight_branch left + total_weight_branch right
+totalWeightMobile :: BinaryMobile -> Int
+totalWeightMobile (BinaryMobile left right) = totalWeightBranch left + totalWeightBranch right
 
-total_weight_branch :: Branch -> Int
-total_weight_branch (RecursiveMobile _ mobile) = total_weight_mobile mobile
-total_weight_branch (Weight _ val) = val
+totalWeightBranch :: Branch -> Int
+totalWeightBranch (RecursiveMobile _ mobile) = totalWeightMobile mobile
+totalWeightBranch (Weight _ val) = val
 
-is_balanced :: BinaryMobile -> Bool
-is_balanced (BinaryMobile left right) = branch_torque left == branch_torque right && is_balanced_branch left && is_balanced_branch right
+isBalanced :: BinaryMobile -> Bool
+isBalanced (BinaryMobile left right) = branchTorque left == branchTorque right && isBalancedBranch left && isBalancedBranch right
 
-is_balanced_branch :: Branch -> Bool
-is_balanced_branch (RecursiveMobile length mobile) = is_balanced mobile
-is_balanced_branch (Weight _ _) = True
+isBalancedBranch :: Branch -> Bool
+isBalancedBranch (RecursiveMobile length mobile) = isBalanced mobile
+isBalancedBranch (Weight _ _) = True
 
-branch_torque :: Branch -> Int
-branch_torque (RecursiveMobile length mobile) = length * (mobile_torque mobile)
-branch_torque (Weight length value) = length * value
+branchTorque :: Branch -> Int
+branchTorque (RecursiveMobile length mobile) = length * (mobileTorque mobile)
+branchTorque (Weight length value) = length * value
 
-mobile_torque :: BinaryMobile -> Int
-mobile_torque (BinaryMobile left right) = branch_torque left + branch_torque right
+mobileTorque :: BinaryMobile -> Int
+mobileTorque (BinaryMobile left right) = branchTorque left + branchTorque right
 
 
 --Ex 2.30 ----------------------------------------------------------------------------------------------------------------
-square_tree :: (Num a) => Tree a -> Tree a
-square_tree (Leaf a) = Leaf $ square a
-square_tree (Node []) = Node []
-square_tree (Node (x:xs)) = (square_tree x) `append_tree` (square_tree $ Node xs)
+squareTree :: (Num a) => Tree a -> Tree a
+squareTree (Leaf a) = Leaf $ square a
+squareTree (Node []) = Node []
+squareTree (Node (x:xs)) = (squareTree x) `appendTree` (squareTree $ Node xs)
 
 
 --Ex 2.31 ----------------------------------------------------------------------------------------------------------------
-tree_map :: Tree a -> (a -> b) -> Tree b
-tree_map (Leaf a) f = Leaf $ f a
-tree_map (Node []) f = Node []
-tree_map (Node (x:xs)) f = (tree_map x f) `append_tree` (tree_map (Node xs) f)
+treeMap :: Tree a -> (a -> b) -> Tree b
+treeMap (Leaf a) f = Leaf $ f a
+treeMap (Node []) f = Node []
+treeMap (Node (x:xs)) f = (treeMap x f) `appendTree` (treeMap (Node xs) f)
 
 
 --Ex 2.32 ----------------------------------------------------------------------------------------------------------------
@@ -383,84 +383,323 @@ powerset (x:xs) = foldl (\acc n -> (x:n):acc) (powerset xs) (powerset xs)
 
 
 --Ex 2.33 ----------------------------------------------------------------------------------------------------------------
-map_sicp :: (a -> b) -> [a] -> [b]
-map_sicp f = foldr (\n acc -> (f n):acc) [] 
+mapSicp :: (a -> b) -> [a] -> [b]
+mapSicp f = foldr (\n acc -> (f n):acc) [] 
 
 append :: [a] -> [a] -> [a]
 append xs ys = foldr (\n acc -> n:acc) ys xs
 
-length_sicp :: [a] -> Int
-length_sicp = foldl (\acc n -> acc + 1) 0
+lengthSicp :: [a] -> Int
+lengthSicp = foldl (\acc n -> acc + 1) 0
 
 
 --Ex 2.34 ----------------------------------------------------------------------------------------------------------------
-horner_eval :: Int -> [Int] -> Int
-horner_eval x = foldr (\n acc -> (acc * x) + n) 0 
+hornerEval :: Int -> [Int] -> Int
+hornerEval x = foldr (\n acc -> (acc * x) + n) 0 
 
 
 --Ex 2.35 ----------------------------------------------------------------------------------------------------------------
-count_leaves :: Tree a -> Int
-count_leaves tree = undefined
+countLeaves :: Tree a -> Int
+countLeaves tree = undefined
 
 
 --Ex 2.36 ----------------------------------------------------------------------------------------------------------------
-accumulate_n :: (a -> a -> a) -> a -> [[a]] -> [a]
-accumulate_n f start_val seq = if (null $ car seq) then []
-                               else (foldl f start_val get_first_elems):(accumulate_n f start_val get_rest)
+accumulateN :: (a -> a -> a) -> a -> [[a]] -> [a]
+accumulateN f startVal seq = if (null $ car seq) then []
+                               else (foldl f startVal getFirstElems):(accumulateN f startVal getRest)
 
-                               where get_first_elems = map car seq
-                                     get_rest = map cdr seq
+                               where getFirstElems = map car seq
+                                     getRest = map cdr seq
 
 --Ex 2.37 ----------------------------------------------------------------------------------------------------------------
-type Vector = [Int]
-type Matrix = [[Int]]
+type Vector = [Double]
+type Matrix = [Vector]
 
-matrix_vector_prod :: Matrix -> Vector -> Vector
-matrix_vector_prod [] vector = []
-matrix_vector_prod (row:matrix) vector = (foldl (+) 0 terms):(matrix_vector_prod matrix vector)
+matrixVectorProd :: Matrix -> Vector -> Vector
+matrixVectorProd [] vector = []
+matrixVectorProd (row:matrix) vector = (foldl (+) 0 terms):(matrixVectorProd matrix vector)
 
                                             where terms = zipWith (*) row vector 
 
-matrix_prod :: Matrix -> Matrix -> Matrix
-matrix_prod [] _ = []
-matrix_prod m n = (matrix_prod_row m n):(matrix_prod (cdr m) n)
+matrixProd :: Matrix -> Matrix -> Matrix
+matrixProd [] _ = []
+matrixProd m n = (matrixProdRow m n):(matrixProd (cdr m) n)
 
-dot_prod :: Vector -> Vector -> Int
-dot_prod [] _ = 0
-dot_prod _ [] = 0
-dot_prod v1 v2 = foldl (+) 0 (zipWith (*) v1 v2) 
+dotProd :: Vector -> Vector -> Double
+dotProd [] _ = 0
+dotProd _ [] = 0
+dotProd v1 v2 = foldl (+) 0 (zipWith (*) v1 v2) 
 
 transpose :: Matrix -> Matrix
 transpose [] = []
 transpose ([]:m) = []
-transpose m = (car_column m):(transpose $ cdr_column m)
+transpose m = (carColumn m):(transpose $ cdrColumn m)
 
 
 --Ex 2.39 ----------------------------------------------------------------------------------------------------------------
-reverse_foldr :: [a] -> [a]
-reverse_foldr xs = foldr (\n acc -> acc ++ [n]) [] xs
+reverseFoldr :: [a] -> [a]
+reverseFoldr xs = foldr (\n acc -> acc ++ [n]) [] xs
 
-reverse_foldl :: [a] -> [a]
-reverse_foldl xs = foldl (\acc n -> n:acc) [] xs
+reverseFoldl :: [a] -> [a]
+reverseFoldl xs = foldl (\acc n -> n:acc) [] xs
 
 
 --Helper functions
-matrix_prod_row :: Matrix -> Matrix -> Vector
-matrix_prod_row _ [] = []
-matrix_prod_row _ ([]:n) = []
-matrix_prod_row m n = (dot_prod (car m) (car_column n)):(matrix_prod_row m (cdr_column n))
+matrixProdRow :: Matrix -> Matrix -> Vector
+matrixProdRow _ [] = []
+matrixProdRow _ ([]:n) = []
+matrixProdRow m n = (dotProd (car m) (carColumn n)):(matrixProdRow m (cdrColumn n))
 
-car_column :: Matrix -> Vector
-car_column = map car
+carColumn :: Matrix -> Vector
+carColumn = map car
 
-cdr_column :: Matrix -> Matrix
-cdr_column = map cdr
+cdrColumn :: Matrix -> Matrix
+cdrColumn = map cdr
 
 
+--Ex 2.40 ----------------------------------------------------------------------------------------------------------------
+flatmap :: (a -> [b]) -> [a] -> [b]
+flatmap f seq = foldl (\acc n -> acc ++ n) [] (map f seq)
+
+uniquePairs :: Int -> [(Int, Int)]
+uniquePairs n = flatmap (\i -> map (\j -> (i, j)) [1..i]) [1..n]
+
+primeSumPairs :: Int -> [(Int, Int)]
+primeSumPairs n = filter (\(i, j) -> isPrime $ i + j) (uniquePairs n)
+
+
+--Ex 2.41 ----------------------------------------------------------------------------------------------------------------
+uniqueTriples :: Int -> [(Int, Int, Int)]
+uniqueTriples n = flatmap (\i -> flatmap (\j -> map (\k -> (i, j, k)) [1..j]) [1..i]) [1..n]
+
+triplesLessSum :: Int -> Int -> [(Int, Int, Int)]
+triplesLessSum n s = filter (\(i, j, k) -> i + j + k == s) (uniqueTriples n)
+
+
+--Ex 2.42 ----------------------------------------------------------------------------------------------------------------
+type Position = (Int, Int)
+
+adjoinPosition :: Position -> [Position] -> [Position]
+adjoinPosition x xs = x:xs
+
+emptyBoard :: [Position]
+emptyBoard = []
+
+isSafe ::  Int -> [Position] -> Bool
+isSafe _ [] = error "No position in set at column k"
+isSafe k ((row, col):xs) | col == k  = safeHelper (row, col) xs 
+                          | otherwise = isSafe k xs
+
+safeHelper :: Position -> [Position] -> Bool
+safeHelper _ [] = True
+safeHelper (row, col) ((a, b):xs) | (row, col) == (a, b)            = safeHelper (row, col) xs
+                                  |  row == a                       = False 
+                                  |  col == b                       = False
+                                  |  row + col == a + b             = False
+                                  |  abs (row - col) == abs (a - b) = False 
+                                  |  otherwise                      = safeHelper (row, col) xs
+
+
+--Ex 2.44 ----------------------------------------------------------------------------------------------------------------
+--We don't have access to the actual picture language, but we can still write functions as if we did
+
+-- Define names so that the Haskell compiler will accept them
+data Painter = Painter
+beside x y = x
+below x y = x
+
+upSplit :: Painter -> Int -> Painter
+upSplit painter n | n == 0    = painter
+                   | otherwise = below painter (beside smaller smaller)
+
+                     where smaller = upSplit painter (n - 1)
+
+
+--Ex 2.45 ----------------------------------------------------------------------------------------------------------------
+split :: (Painter -> Painter -> Painter) -> (Painter -> Painter -> Painter) -> (Painter -> Integer -> Painter)
+split halver1 halver2 = let recc = \painter n -> let smaller = recc painter (n - 1) in
+                                                     if (n == 0) then painter
+                                                     else halver1 painter (halver2 smaller smaller) in recc
+
+
+--Ex 2.46 ----------------------------------------------------------------------------------------------------------------
+makeVec :: Double -> Double -> Vector
+makeVec x y = [x, y]
+
+xCorVect :: Vector -> Double
+xCorVect [x, y] = x;
+
+yCorVect :: Vector -> Double
+yCorVect [x, y] = y;
+
+addVect :: Vector -> Vector -> Vector
+addVect vec1 vec2 = makeVec (xCorVect vec1 + xCorVect vec2) (yCorVect vec1 + yCorVect vec2)
+
+subVect :: Vector -> Vector -> Vector
+subVect vec1 vec2 = makeVec (xCorVect vec1 - xCorVect vec2) (yCorVect vec1 - yCorVect vec2)
+
+scaleVect :: Vector -> Double -> Vector
+scaleVect vec n = makeVec (xCorVect vec * n) (yCorVect vec * n) 
+
+
+--Ex 2.47 ----------------------------------------------------------------------------------------------------------------
+type Frame = [Vector]
+
+getOrigin :: Frame -> Vector
+getOrigin [origin, edge1, edge2] = origin
+
+getEdge1 :: Frame -> Vector
+getEdge1 [origin, edge1, edge2] = edge1
+
+getEdge2 :: Frame -> Vector
+getEdge2 [origin, edge1, edge2] = edge2
+
+--Lisp's cons/cdr tree modeled as a binary tree using algebraic data types
+
+data FrameCons = Atom Vector | Comp FrameCons FrameCons deriving (Read, Show, Eq)
+
+getOriginCons :: FrameCons -> Vector
+getOriginCons (Comp (Atom origin) _) = origin
+
+getEdge1Cons :: FrameCons -> Vector
+getEdge1Cons (Comp _ (Comp (Atom edge1) _)) = edge1
+
+getEdge2Cons :: FrameCons -> Vector
+getEdge2Cons (Comp _ (Comp _ (Atom edge2))) = edge2
+
+
+--Ex 2.48 ----------------------------------------------------------------------------------------------------------------
+data Seg = Seg (Vector, Vector) deriving (Ord, Eq)
+
+makeSeg :: Vector -> Vector -> Seg
+makeSeg v1 v2 = Seg (v1, v2)
+
+startSeg :: Seg -> Vector 
+startSeg (Seg (v1, _)) = v1
+
+endSeg :: Seg -> Vector 
+endSeg (Seg (_, v2)) = v2
+
+
+--Ex 2.49 ----------------------------------------------------------------------------------------------------------------
+segmentsToPainter :: [Seg] -> Painter
+segmentsToPainter segList = Painter   
+
+bottomLeft :: Vector
+bottomLeft = makeVec 0 0
+
+topLeft :: Vector
+topLeft = makeVec 0 1
+
+bottomRight :: Vector
+bottomRight = makeVec 1 0
+
+topRight :: Vector
+topRight = makeVec 1 1 
+
+leftMidpoint :: Vector
+leftMidpoint = makeVec 0 0.5
+
+rightMidpoint :: Vector
+rightMidpoint = makeVec 1 0.5
+
+topMidpoint :: Vector
+topMidpoint = makeVec 0.5 1
+
+bottomMidpoint :: Vector
+bottomMidpoint = makeVec 0.5 0
+
+--a
+outline :: Painter
+outline = segmentsToPainter [top, left, right, bottom]
+
+          where top = makeSeg topLeft topRight
+                bottom = makeSeg bottomLeft bottomRight
+                left = makeSeg bottomLeft topLeft
+                right = makeSeg bottomRight topRight
+
+--b
+cross :: Painter
+cross = segmentsToPainter [posGrad, negGrad]
+
+        where posGrad = makeSeg bottomLeft topRight
+              negGrad = makeSeg bottomRight topLeft
+
+--c
+diamond :: Painter
+diamond = segmentsToPainter [leftTop, rightTop, rightBottom, leftBottom]
+
+          where leftTop = makeSeg leftMidpoint topMidpoint
+                leftBottom = makeSeg leftMidpoint bottomMidpoint
+                rightTop = makeSeg rightMidpoint topMidpoint
+                rightBottom = makeSeg rightMidpoint bottomMidpoint
+
+--Ex 2.50 ----------------------------------------------------------------------------------------------------------------
+transformPainter :: Painter -> Vector -> Vector -> Vector -> Painter
+transformPainter a b c d = a
+
+flipHoriz :: Painter -> Painter
+flipHoriz painter = transformPainter painter origin corner1 corner2
+
+                     where origin = makeVec 1 0
+                           corner1 = makeVec 0 0 
+                           corner2 = makeVec 1 1
+
+rotate180 :: Painter -> Painter
+rotate180 painter = transformPainter painter origin corner1 corner2
+
+                     where origin = makeVec 1 1
+                           corner1 = makeVec 0 1 
+                           corner2 = makeVec 1 0
+
+rotate90 :: Painter -> Painter
+rotate90 painter = transformPainter painter origin corner1 corner2
+
+                     where origin = makeVec 0 1
+                           corner1 = makeVec 0 0 
+                           corner2 = makeVec 1 1
+
+
+--Ex 2.51 ----------------------------------------------------------------------------------------------------------------
+belowAbstracted :: Painter -> Painter -> Painter
+belowAbstracted painter1 painter2 = rotate180 $ rotate90 $ beside (rotate90 painter1) (rotate90 painter2)
+
+
+--Ex 2.52 ----------------------------------------------------------------------------------------------------------------
+rightSplit :: Painter -> Int -> Painter
+rightSplit painter n | n == 0    = painter
+                     | otherwise = beside painter (below smaller smaller)
+
+                     where smaller = upSplit painter (n - 1)
+
+
+--b
+cornerSplit :: Painter -> Int -> Painter
+cornerSplit painter n | n == 0    = painter
+                      | otherwise = beside (below painter up) (below up up)
+
+                         where up = upSplit painter n 
+
+--c
+squareLimit :: Painter -> Int -> Painter
+squareLimit = undefined
+
+                
 --Helper functions -------------------------------------------------------------------------------------------------------
 -- In some cases I use car and cdr instead of pattern matching to keep my Haskell closer to the scheme code 
+-- However in some cases it's just far more concise to pattern match
+
+car :: [a] -> a
 car = head
+
+cdr :: [a] -> [a]
 cdr = tail
+
+cons :: a -> a -> [a]
+cons a b = [a, b]
+
+isPrime :: Int -> Bool
+isPrime n = null [x | x <- [2..(n-1)], n `mod` x == 0]
 
 xor :: Bool -> Bool -> Bool
 xor a b = (a && not b) || (not a && b)
@@ -471,11 +710,6 @@ average x y = (x + y) / 2.0
 square :: (Num a) => a -> a
 square a = a * a
 
-floor_log :: Int -> Int -> Int
-floor_log n val = floor $ logBase (fromIntegral n) (fromIntegral val)
+floorLog :: Int -> Int -> Int
+floorLog n val = floor $ logBase (fromIntegral n) (fromIntegral val)
 
-min_list :: (Ord a) => [a] -> a
-min_list = foldl1 (\acc n -> min acc n) 
-
-max_list :: (Ord a) => [a] -> a
-max_list = foldl1 (\acc n -> max acc n) 

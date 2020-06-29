@@ -1,139 +1,139 @@
 import Data.Bits
 
 -- Ex 1.3
-sum_of_squares_greatest_two :: Int -> Int -> Int -> Int
-sum_of_squares_greatest_two x y z | x <= y && x <= z = sum_of_squares y z
-                                  | y <= x && y <= z = sum_of_squares x z
-                                  | z <= x && z <= y = sum_of_squares x y
+sumOfSquaresGreatestTwo :: Int -> Int -> Int -> Int
+sumOfSquaresGreatestTwo x y z | x <= y && x <= z = sumOfSquares y z
+                              | y <= x && y <= z = sumOfSquares x z
+                              | z <= x && z <= y = sumOfSquares x y
 
-sum_of_squares :: Int -> Int -> Int
-sum_of_squares x y = square x + square y
+sumOfSquares :: Int -> Int -> Int
+sumOfSquares x y = square x + square y
 
 
 -- Ex 1.7
-sqrt_sicp :: Double -> Double
-sqrt_sicp x = sqrt_help x 1 0
+sqrtSicp :: Double -> Double
+sqrtSicp x = sqrtHelp x 1 0
 
-sqrt_help :: Double -> Double -> Double -> Double
-sqrt_help x guess old_guess = if (good_enough guess old_guess) then guess
-                              else sqrt_help x improved_guess guess
+sqrtHelp :: Double -> Double -> Double -> Double
+sqrtHelp x guess oldGuess = if (goodEnough guess oldGuess) then guess
+                            else sqrtHelp x improvedGuess guess
 
-                              where improved_guess = average guess (x / guess)
+                            where improvedGuess = average guess (x / guess)
 
 
-good_enough :: Double -> Double -> Bool
-good_enough guess old_guess = if (abs (guess - old_guess) <= tolerance) then True 
-                              else False
+goodEnough :: Double -> Double -> Bool
+goodEnough guess oldGuess = if (abs (guess - oldGuess) <= tolerance) then True 
+                            else False
 
-                              where tolerance = 0.0000000001
+                            where tolerance = 0.0000000001
 
 -- Ex 1.8
-cube_root_sicp :: Double -> Double
-cube_root_sicp  x = cube_root_help x 1 0
+cubeRootSicp :: Double -> Double
+cubeRootSicp  x = cubeRootHelp x 1 0
 
-cube_root_help :: Double -> Double -> Double -> Double
-cube_root_help x guess old_guess = if (good_enough guess old_guess) then guess
-                                   else cube_root_help x improved_guess guess
+cubeRootHelp :: Double -> Double -> Double -> Double
+cubeRootHelp x guess oldGuess = if (goodEnough guess oldGuess) then guess
+                                else cubeRootHelp x improvedGuess guess
 
-                                   where improved_guess = (x / (guess ^ 2) + (2 * guess)) / 3
+                                where improvedGuess = (x / (guess ^ 2) + (2 * guess)) / 3
 
 -- Ex 1.11
-f_recurse :: Int -> Int
-f_recurse n | n < 3     = n 
-            | otherwise = f_recurse (n - 1) + 2 * f_recurse (n - 2) + 3 * f_recurse (n - 3)
+fRecurse :: Int -> Int
+fRecurse n | n < 3     = n 
+            | otherwise = fRecurse (n - 1) + 2 * fRecurse (n - 2) + 3 * fRecurse (n - 3)
 
-f_iter :: Int -> Int
-f_iter n = f_iter_helper 2 1 0 (n - 2)
+fIter :: Int -> Int
+fIter n = fIterHelper 2 1 0 (n - 2)
 
-f_iter_helper :: Int -> Int -> Int -> Int -> Int
-f_iter_helper a b c count | count < 0  = count + 2
-                          | count == 0 = a 
-                          | otherwise  = f_iter_helper (a + 2 * b + 3 * c) a b (count - 1)
+fIterHelper :: Int -> Int -> Int -> Int -> Int
+fIterHelper a b c count | count < 0  = count + 2
+                        | count == 0 = a 
+                        | otherwise  = fIterHelper (a + 2 * b + 3 * c) a b (count - 1)
 
 
 -- Ex 1.12
-pascal_triangle :: Int -> Int -> Int
-pascal_triangle r c | out_of_bounds    = error "Invalid arguments" 
-                    | edge_of_triangle = 1 
-                    | otherwise        = pascal_triangle (r - 1) (c - 1) + pascal_triangle (r - 1) c
+pascalTriangle :: Int -> Int -> Int
+pascalTriangle r c | outOfBounds    = error "Invalid arguments" 
+                   | edgeOfTriangle = 1 
+                   | otherwise        = pascalTriangle (r - 1) (c - 1) + pascalTriangle (r - 1) c
 
-                      where out_of_bounds = r < 1 || c < 1 || r < c
-                            edge_of_triangle = c == 1 || r == c
+                   where outOfBounds = r < 1 || c < 1 || r < c
+                         edgeOfTriangle = c == 1 || r == c
 
 -- Ex 1.16
-fast_power_iter :: Int -> Int -> Int
-fast_power_iter mantissa exp = fast_power_iter_helper 1 mantissa exp
+fastPowerIter :: Int -> Int -> Int
+fastPowerIter mantissa exp = fastPowerIterHelper 1 mantissa exp
 
-fast_power_iter_helper :: Int -> Int -> Int -> Int
-fast_power_iter_helper total helper exp | exp == 0  = total
-                                        | even exp  = recurse_halfing_exponent
-                                        | otherwise = recurse_decrementing
+fastPowerIterHelper :: Int -> Int -> Int -> Int
+fastPowerIterHelper total helper exp | exp == 0  = total
+                                     | even exp  = recurseHalfingExponent
+                                     | otherwise = recurseDecrementing
 
-                                          where recurse_halfing_exponent = fast_power_iter_helper total (helper ^ 2) (half exp)
-                                                recurse_decrementing = fast_power_iter_helper (total * helper) helper (exp - 1)
+                                       where recurseHalfingExponent = fastPowerIterHelper total (helper ^ 2) (half exp)
+                                             recurseDecrementing = fastPowerIterHelper (total * helper) helper (exp - 1)
 -- Ex 1.17
-fast_mult_recurse :: Int -> Int -> Int
-fast_mult_recurse x y | x == 0 || y == 0 = 0
-                      | x == 1           = y
-                      | y == 1           = x
-                      | even y           = recurse_halfing_second_arg
-                      | even x           = recurse_halfing_first_arg
-                      | otherwise        = recurse_decrementing_second_arg
+fastMultRecurse :: Int -> Int -> Int
+fastMultRecurse x y | x == 0 || y == 0 = 0
+                    | x == 1           = y
+                    | y == 1           = x
+                    | even y           = recurseHalfingSecondArg
+                    | even x           = recurseHalfingFirstArg
+                    | otherwise        = recurseDecrementingSecondArg
 
-                        where recurse_halfing_second_arg = 2 * fast_mult_recurse x (half y)
-                              recurse_halfing_first_arg = 2 * fast_mult_recurse (half x) y
-                              recurse_decrementing_second_arg = x + fast_mult_recurse x (y - 1)
+                    where recurseHalfingSecondArg = 2 * fastMultRecurse x (half y)
+                          recurseHalfingFirstArg = 2 * fastMultRecurse (half x) y
+                          recurseDecrementingSecondArg = x + fastMultRecurse x (y - 1)
 
 
 -- Ex 1.18
-fast_mult_iter :: Int -> Int -> Int
-fast_mult_iter x y = mult_help 0 x y
+fastMultIter :: Int -> Int -> Int
+fastMultIter x y = multHelp 0 x y
 
-mult_help :: Int -> Int -> Int -> Int
-mult_help helper x y = if (x == 0 || y == 0) then 0
-                       else if (x == 1) then y + helper
-                       else if (y == 1) then x
-                       else if (even x) then recurse_halfing
-                       else recurse_decrementing
+multHelp :: Int -> Int -> Int -> Int
+multHelp helper x y = if (x == 0 || y == 0) then 0
+                      else if (x == 1) then y + helper
+                      else if (y == 1) then x
+                      else if (even x) then recurseHalfing
+                      else recurseDecrementing
 
-                       where recurse_halfing = mult_help helper (half x) (double y) 
-                             recurse_decrementing = mult_help  (helper + y) (x - 1) y
+                      where recurseHalfing = multHelp helper (half x) (double y) 
+                             recurseDecrementing = multHelp  (helper + y) (x - 1) y
 
 
 -- Ex 1.19
 fib :: Int -> Int
-fib n = fib_iter 1 0 0 1 n
+fib n = fibIter 1 0 0 1 n
 
-fib_iter :: Int -> Int -> Int -> Int -> Int -> Int
-fib_iter a b p q count | (count == 0) = b
-                       | (even count) = fib_iter a b (p * p + q * q) (2 * p * q + q * q) (half count)
-                       | otherwise    = fib_iter (b * q + a * q + a * p) (b * p + a * q) p q (count - 1)
+fibIter :: Int -> Int -> Int -> Int -> Int -> Int
+fibIter a b p q count | (count == 0) = b
+                      | (even count) = fibIter a b (p * p + q * q) (2 * p * q + q * q) (half count)
+                      | otherwise    = fibIter (b * q + a * q + a * p) (b * p + a * q) p q (count - 1)
 
 
 -- Ex 1.23
-is_prime :: Int -> Bool
-is_prime n = n == smallest_divisor n
+isPrime :: Int -> Bool
+isPrime n = n == smallestDivisor n
 
-smallest_divisor :: Int -> Int
-smallest_divisor n = smalldiv_helper n 2 (floor_sqrt n)
+smallestDivisor :: Int -> Int
+smallestDivisor n = smalldivHelper n 2 (floorSqrt n)
 
-smalldiv_helper :: Int -> Int -> Int -> Int
-smalldiv_helper n curr lim = if (curr > lim) then n
-                             else if (n `mod` curr == 0) then curr
-                             else smalldiv_helper n (next curr) lim
+smalldivHelper :: Int -> Int -> Int -> Int
+smalldivHelper n curr lim = if (curr > lim) then n
+                            else if (n `mod` curr == 0) then curr
+                            else smalldivHelper n (next curr) lim
 
 next :: Int -> Int
 next n = if (n == 2) then 3 else n + 2
 
 
 --Ex 1.27
-fermat_test :: Int -> Bool
-fermat_test n = fermat_helper (n - 1) n
+fermatTest :: Int -> Bool
+fermatTest n = fermatHelper (n - 1) n
 
-fermat_helper :: Int  -> Int  -> Bool
-fermat_helper a n = if (a == 1) then True
-                    else if ((expmod a n n) `mod` n /= a) then False
-                    else fermat_helper (a - 1) n
+fermatHelper :: Int  -> Int  -> Bool
+fermatHelper a n = if (a == 1) then True
+                   else if ((expmod a n n) `mod` n /= a) then False
+                   else fermatHelper (a - 1) n
 
 expmod :: Int -> Int -> Int -> Int
 expmod base exp m = if (exp == 0) then 1
@@ -143,153 +143,153 @@ expmod base exp m = if (exp == 0) then 1
 
 --Ex 1.29
 simpsons :: (Double -> Double) -> Double -> Double -> Double -> Double
-simpsons f a b n = let h = (b - a) / n in (simpsons_helper f a b n 0 h) * h / 3
+simpsons f a b n = let h = (b - a) / n in (simpsonsHelper f a b n 0 h) * h / 3
 
-simpsons_helper :: (Double -> Double) -> Double -> Double -> Double -> Double -> Double -> Double
-simpsons_helper f a b n k h   | k == n           = yk
-                              | k == 0           = yk + recurse
-                              | (even $ round k) = 2 * yk + recurse
-                              | otherwise        = 4 * yk + recurse
+simpsonsHelper :: (Double -> Double) -> Double -> Double -> Double -> Double -> Double -> Double
+simpsonsHelper f a b n k h   | k == n           = yk
+                             | k == 0           = yk + recurse
+                             | (even $ round k) = 2 * yk + recurse
+                             | otherwise        = 4 * yk + recurse
 
-                              where yk = f (a + k * h)
-                                    recurse = simpsons_helper f a b n (k + 1) h
+                             where yk = f (a + k * h)
+                                   recurse = simpsonsHelper f a b n (k + 1) h
 
 
 --Ex 1.30
-sum_sicp :: (Int -> Int) -> Int -> (Int -> Int) -> Int -> Int
-sum_sicp term a next b = sum_iter term a next b 0
+sumSicp :: (Int -> Int) -> Int -> (Int -> Int) -> Int -> Int
+sumSicp term a next b = sumIter term a next b 0
 
-sum_iter :: (Int -> Int) -> Int -> (Int -> Int) -> Int -> Int -> Int
-sum_iter term a next b total = if (a > b) then total
-                               else sum_iter term (next a) next b (total + (term a))
+sumIter :: (Int -> Int) -> Int -> (Int -> Int) -> Int -> Int -> Int
+sumIter term a next b total = if (a > b) then total
+                              else sumIter term (next a) next b (total + (term a))
 
 
 --Ex 1.31a
-product_sicp :: (Int -> Int) -> Int -> (Int -> Int) -> Int -> Int
-product_sicp term a next b = if (a == b) then 0 
-                             else product_iter term a next b 1
+productSicp :: (Int -> Int) -> Int -> (Int -> Int) -> Int -> Int
+productSicp term a next b = if (a == b) then 0 
+                            else productIter term a next b 1
 
 
-product_iter :: (Int -> Int) -> Int -> (Int -> Int) -> Int -> Int -> Int
-product_iter term a next b total = if (a > b) then total
-                                   else product_iter term (next a) next b (total * (term a))
+productIter :: (Int -> Int) -> Int -> (Int -> Int) -> Int -> Int -> Int
+productIter term a next b total = if (a > b) then total
+                                  else productIter term (next a) next b (total * (term a))
 
 
 fac :: Int -> Int
-fac x = product_sicp (\n -> n) 1 (\n -> n + 1)  x
+fac x = productSicp (\n -> n) 1 (\n -> n + 1)  x
 
 
-pi_sicp :: Double 
-pi_sicp = 4.0 * top / (bottom * limit)
+piSicp :: Double 
+piSicp = 4.0 * top / (bottom * limit)
 
           where limit = 20
-                top = fromIntegral $ product_sicp (\n -> if (n == 2) then n else if (even n) then n * n else 1) 2 (+1) (floor limit)
-                bottom = fromIntegral $ product_sicp (\n -> if (even n) then 1 else n * n) 2 (+1) (floor limit)
+                top = fromIntegral $ productSicp (\n -> if (n == 2) then n else if (even n) then n * n else 1) 2 (+1) (floor limit)
+                bottom = fromIntegral $ productSicp (\n -> if (even n) then 1 else n * n) 2 (+1) (floor limit)
 
 
 --Ex 1.31b
-product_rec_sicp :: (Int -> Int) -> Int -> (Int -> Int) -> Int -> Int
-product_rec_sicp term a next b = if (a > b) then 1 
-                                 else term a * product_rec_sicp term (next a) next b
+productRecSicp :: (Int -> Int) -> Int -> (Int -> Int) -> Int -> Int
+productRecSicp term a next b = if (a > b) then 1 
+                                else term a * productRecSicp term (next a) next b
 
 
 --Ex 1.32a
 accum :: (Ord o) => (a -> a -> a) -> a -> (o -> a) -> o -> (o -> o) -> o -> a
-accum combiner null_value term a next b = if (a > b) then null_value
-                                          else combiner (term a) (accum combiner null_value term (next a) next b)
+accum combiner nullValue term a next b = if (a > b) then nullValue
+                                         else combiner (term a) (accum combiner nullValue term (next a) next b)
 
-prod_accum term a next b = accum (*) 1 term a next b
-sum_accum term a next b = accum (+) 0 term a next b
+prodAccum term a next b = accum (*) 1 term a next b
+sumAccum term a next b = accum (+) 0 term a next b
 
 
 --Ex 1.32b
-accum_iter :: (Ord o) => (a -> a -> a) -> a -> (o -> a) -> o -> (o -> o) -> o -> a
-accum_iter combiner null_value term a next b = accum_iter_helper combiner null_value term a next b
+accumIter :: (Ord o) => (a -> a -> a) -> a -> (o -> a) -> o -> (o -> o) -> o -> a
+accumIter combiner nullValue term a next b = accumIterHelper combiner nullValue term a next b
 
-accum_iter_helper :: (Ord o) => (a -> a -> a) -> a -> (o -> a) -> o -> (o -> o) -> o -> a
-accum_iter_helper combiner total term a next b = if (a > b) then total
-                                                 else accum_iter_helper combiner (combiner total (term a)) term (next a) next b 
+accumIterHelper :: (Ord o) => (a -> a -> a) -> a -> (o -> a) -> o -> (o -> o) -> o -> a
+accumIterHelper combiner total term a next b = if (a > b) then total
+                                               else accumIterHelper combiner (combiner total (term a)) term (next a) next b 
 
 
 --Ex 1.33
-filter_accum :: (Ord o) => (a -> a -> a) -> a -> (o -> a) -> o -> (o -> o) -> o -> (o -> Bool) -> a
-filter_accum combiner null_value term a next b pred = filter_accum_helper combiner null_value term a next b pred
+filterAccum :: (Ord o) => (a -> a -> a) -> a -> (o -> a) -> o -> (o -> o) -> o -> (o -> Bool) -> a
+filterAccum combiner nullValue term a next b pred = filterAccumHelper combiner nullValue term a next b pred
 
-filter_accum_helper :: (Ord o) => (a -> a -> a) -> a -> (o -> a) -> o -> (o -> o) -> o -> (o -> Bool) -> a
-filter_accum_helper combiner total term a next b pred = if (a > b) then total
-                                                        else if (pred a) then filter_accum_helper combiner (combiner total (term a)) term (next a) next b pred
-                                                        else filter_accum_helper combiner total term (next a) next b pred
+filterAccumHelper :: (Ord o) => (a -> a -> a) -> a -> (o -> a) -> o -> (o -> o) -> o -> (o -> Bool) -> a
+filterAccumHelper combiner total term a next b pred = if (a > b) then total
+                                                      else if (pred a) then filterAccumHelper combiner (combiner total (term a)) term (next a) next b pred
+                                                      else filterAccumHelper combiner total term (next a) next b pred
 
 
 --Ex 1.33a
-sum_of_squares_of_primes :: Int -> Int -> Int
-sum_of_squares_of_primes a b = filter_accum (+) 0 square a (+1) b is_prime
+sumOfSquaresOfPrimes :: Int -> Int -> Int
+sumOfSquaresOfPrimes a b = filterAccum (+) 0 square a (+1) b isPrime
 
 
 --Ex 1.33b
-integers_relatively_prime_product :: Int -> Int
-integers_relatively_prime_product n = filter_accum (*) 1 (+0) 1 (+1) n (relative_prime n)
+integersRelativelyPrimeProduct :: Int -> Int
+integersRelativelyPrimeProduct n = filterAccum (*) 1 (+0) 1 (+1) n (relativePrime n)
 
 
 --Ex 1.35
-fixed_point :: (a -> a) -> a -> (a -> a -> Bool) -> a 
-fixed_point f x close_enough = if (close_enough x next) then next
-                               else fixed_point f next close_enough
+fixedPoint :: (a -> a) -> a -> (a -> a -> Bool) -> a 
+fixedPoint f x closeEnough = if (closeEnough x next) then next
+                             else fixedPoint f next closeEnough
 
-                               where next = f x
+                             where next = f x
 
-close_enough :: Double -> Double -> Bool
-close_enough guess next_guess = let accuracy_limit = 0.00001 in abs (guess - next_guess) < accuracy_limit
+closeEnough :: Double -> Double -> Bool
+closeEnough guess nextGuess = let accuracyLimit = 0.00001 in abs (guess - nextGuess) < accuracyLimit
 
-golden_ratio :: Double
-golden_ratio = fixed_point (\x -> 1.0 + (1.0 / x)) 1 close_enough
+goldenRatio :: Double
+goldenRatio = fixedPoint (\x -> 1.0 + (1.0 / x)) 1 closeEnough
 
 
 --Ex 1.37
-cont_frac :: Double -> Double -> Int -> Double
-cont_frac n d k = if (k == 1) then n / d
-                  else n / (d + cont_frac n d (k - 1))
+contFrac :: Double -> Double -> Int -> Double
+contFrac n d k = if (k == 1) then n / d
+                 else n / (d + contFrac n d (k - 1))
 
-golden_ratio_frac :: Double
-golden_ratio_frac = let repetitions = 10000 in 1 / cont_frac 1 1 repetitions
+goldenRatioFrac :: Double
+goldenRatioFrac = let repetitions = 10000 in 1 / contFrac 1 1 repetitions
 
 
 --Ex 1.37b
-cont_frac_iter :: Double -> Double -> Int -> Double
-cont_frac_iter n d k = frac_helper n d k 0.0
+contFracIter :: Double -> Double -> Int -> Double
+contFracIter n d k = fracHelper n d k 0.0
 
-frac_helper :: Double -> Double -> Int -> Double -> Double
-frac_helper n d k total = if (k == 1) then total
-                          else frac_helper n d (k - 1) (n / (total + d))
+fracHelper :: Double -> Double -> Int -> Double -> Double
+fracHelper n d k total = if (k == 1) then total
+                         else fracHelper n d (k - 1) (n / (total + d))
 
 
 --Ex 1.38, modified to deal with list inputs rather than fixed values
 type Series = [Double]
 
-cont_frac_list :: Series -> Series -> Int -> Double
-cont_frac_list (ni:n) (di:d) k = if (k == 1) then ni / di
-                                 else ni / (di + cont_frac_list n d (k - 1))
+contFracList :: Series -> Series -> Int -> Double
+contFracList (ni:n) (di:d) k = if (k == 1) then ni / di
+                               else ni / (di + contFracList n d (k - 1))
 
-generate_sequence :: Int -> Double -> Series
-generate_sequence counter add = if (counter `mod` 3 == 0) then add:(generate_sequence (counter + 1) (add + 2))
-                                else 1:(generate_sequence (counter + 1) add)
+generateSequence :: Int -> Double -> Series
+generateSequence counter add = if (counter `mod` 3 == 0) then add:(generateSequence (counter + 1) (add + 2))
+                               else 1:(generateSequence (counter + 1) add)
 
 di :: Series
-di = 1:(generate_sequence 0 2)
+di = 1:(generateSequence 0 2)
 
-e_sicp :: Double
-e_sicp = let repetitions = 10000 in cont_frac_list (cycle [1]) di repetitions + 2
+eSicp :: Double
+eSicp = let repetitions = 10000 in contFracList (cycle [1]) di repetitions + 2
 
 
 --Ex 1.39, modified to be more generic, have to pass in a function to decide how to combine fractions
-cont_frac_list_generic :: Series -> Series -> (Double -> Double -> Double) -> Int -> Double
-cont_frac_list_generic (ni:n) (di:d) f k = if (k == 1) then ni / di
-                                           else ni / (f di (cont_frac_list_generic n d f (k - 1)))
+contFracListGeneric :: Series -> Series -> (Double -> Double -> Double) -> Int -> Double
+contFracListGeneric (ni:n) (di:d) f k = if (k == 1) then ni / di
+                                        else ni / (f di (contFracListGeneric n d f (k - 1)))
 
-tan_approx :: Double -> Double
-tan_approx x = cont_frac_list_generic top_sequence [1, 3..] (-) 10000
+tanApprox :: Double -> Double
+tanApprox x = contFracListGeneric topSequence [1, 3..] (-) 10000
 
-               where top_sequence = x:(cycle $ [x ^ 2])
+               where topSequence = x:(cycle $ [x ^ 2])
 
 
 --Ex 1.40
@@ -297,9 +297,9 @@ cubic :: Double -> Double -> Double -> (Double -> Double)
 cubic a b c = (\x -> x ^ 3 + (a * x ^ 2) + (b * x) + c)
 
 
---Ex 1.41, could also just use Haskell's operator i.e double_sicp f = f . f
-double_sicp :: (a -> a) -> (a -> a)
-double_sicp f = (\n -> f $ f n) 
+--Ex 1.41, could also just use Haskell's operator i.e doubleSicp f = f . f
+doubleSicp :: (a -> a) -> (a -> a)
+doubleSicp f = (\n -> f $ f n) 
 
 
 --Ex 1.42, again could also just use Haskell's operator i.e compose f g = f . g
@@ -309,50 +309,50 @@ compose f g = (\n -> f $ g n)
 
 --Ex 1.43
 repeated :: (a -> a) -> Int -> (a -> a)
-repeated f n = repeated_helper f f n
+repeated f n = repeatedHelper f f n
 
-repeated_helper :: (a -> a) -> (a -> a) -> Int -> (a -> a)
-repeated_helper f f' n | n == 1    = f'
-                       | otherwise = repeated_helper f (f . f') (n - 1)
+repeatedHelper :: (a -> a) -> (a -> a) -> Int -> (a -> a)
+repeatedHelper f f' n | n == 1    = f'
+                      | otherwise = repeatedHelper f (f . f') (n - 1)
 
 
 --Ex 1.44
 smooth :: (Double -> Double) -> (Double -> Double)
 smooth f = (\x -> let dx = 0.05 in (f(x - dx) + f x + f (x + dx)) / 3)
 
-n_smooth ::  Int -> (Double -> Double) -> (Double -> Double)
-n_smooth = repeated smooth
+nSmooth ::  Int -> (Double -> Double) -> (Double -> Double)
+nSmooth = repeated smooth
 
 
 --Ex 1.45
-nth_root :: Int -> Double -> Double
-nth_root n x = fixed_point (mult_dampen root_function) x good_enough
+nthRoot :: Int -> Double -> Double
+nthRoot n x = fixedPoint (multDampen rootFunction) x goodEnough
 
-               where mult_dampen = repeated average_damp damps_needed
-                     root_function = (\y -> x / (y ^ (n - 1)))
-                     damps_needed = floor_log 2 n
+               where multDampen = repeated averageDamp dampsNeeded
+                     rootFunction = (\y -> x / (y ^ (n - 1)))
+                     dampsNeeded = floorLog 2 n
 
-average_damp :: (Double -> Double) -> (Double -> Double)
-average_damp f = (\n -> (f n + n) / 2)
+averageDamp :: (Double -> Double) -> (Double -> Double)
+averageDamp f = (\n -> (f n + n) / 2)
 
 
 --Ex 1.46
-iterative_improve :: (a -> Bool) -> (a -> a) -> (a -> a)
-iterative_improve good_enough improve = (\guess -> if (good_enough guess) then guess else iterative_improve good_enough improve (improve guess)) 
+iterativeImprove :: (a -> Bool) -> (a -> a) -> (a -> a)
+iterativeImprove goodEnough improve = (\guess -> if (goodEnough guess) then guess else iterativeImprove goodEnough improve (improve guess)) 
 
-sqrt_iter_improve :: Double -> Double
-sqrt_iter_improve x = (iterative_improve good_enough_func improve_func) 1
+sqrtIterImprove :: Double -> Double
+sqrtIterImprove x = (iterativeImprove goodEnoughFunc improveFunc) 1
 
-                      where good_enough_func = (\guess -> let threshold = 0.00001 in abs(x - guess ^ 2) < threshold)
-                            improve_func = (\guess -> average guess (x / guess))
+                      where goodEnoughFunc = (\guess -> let threshold = 0.00001 in abs(x - guess ^ 2) < threshold)
+                            improveFunc = (\guess -> average guess (x / guess))
 
-fixed_point_improve :: (a -> a) -> a -> (a -> Bool) -> a 
-fixed_point_improve f x good_enough = (iterative_improve good_enough f) x
+fixedPointImprove :: (a -> a) -> a -> (a -> Bool) -> a 
+fixedPointImprove f x goodEnough = (iterativeImprove goodEnough f) x
 
 
 -- Some helper functions
-relative_prime :: Int -> Int -> Bool
-relative_prime n a = gcd n a == 1
+relativePrime :: Int -> Int -> Bool
+relativePrime n a = gcd n a == 1
 
 double :: Int -> Int
 double n = shift n 1
@@ -363,14 +363,14 @@ half n = shift n (-1)
 average :: Double -> Double -> Double
 average x y = (x + y) / 2.0
 
-floor_sqrt :: Int -> Int
-floor_sqrt = floor . sqrt . fromIntegral
+floorSqrt :: Int -> Int
+floorSqrt = floor . sqrt . fromIntegral
 
 square :: (Num a) => a -> a
 square x = x * x
 
-floor_log :: Int -> Int -> Int
-floor_log n val = floor $ logBase (fromIntegral n) (fromIntegral val)
+floorLog :: Int -> Int -> Int
+floorLog n val = floor $ logBase (fromIntegral n) (fromIntegral val)
 
 inc :: Int -> Int
 inc x = x + 1
@@ -384,6 +384,7 @@ inc x = x + 1
 
 
  
+
 
 
 
