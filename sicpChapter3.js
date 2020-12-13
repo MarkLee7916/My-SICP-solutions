@@ -214,5 +214,468 @@ function evalOrderMixup() {
 	// Despite being an invariant, they'll still be 6 copies of max-counter
 
 
+//Ex 3.10////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// The main difference between the two is that we're essentially wrapping a self executing llamda around the body of make-withdraw in the second example
+// For the environment model this means the creation of an extra frame where initial-amount: 100 
+// The set! call will still affect the balance variable
+
+
+//Ex 3.11////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// I've included a picture of my diagram in the GitHub repo
+// The local states are all saved in local frames that inherit from the original make-account frame
+// if make-account is called twice, you'll have two seperate inheritance trees that both have their own local state
+// Both frame trees will use the same global environment
+
+
+//Ex 3.12////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Response 1: returns (b) as no mutation has happened. Car and cdr have created deep copies meaning x hasn't been affected at all
+// Response 2: returns (a b c d) as x has been mutated by append!. In fact x and w are both pointing to the same object
+// Diagrams will be included in the GitHub repo.
+
+
+//Ex 3.13////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Diagrams will be included in the GitHub repo.
+// It will recurse infinitely, travelling around the cycle of pointers
+
+
+//Ex 3.14////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Given a list, this procedure will return a reversed version of the list
+// v will print () i.e null
+// w will print (d c b a)
+
+
+//Ex 3.15////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Answer is in GitHub repo
+
+
+//Ex 3.16////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Answer is in GitHub repo
+
+
+//Ex 3.17////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function countPairs(pair) {
+	const cache = new Set();
+
+	return countPairsHelper(cache, pair);
+}
+
+function countPairsHelper(cache, pair) {
+	if (!isPair(pair) || cache.has(pair)) {
+		return 0;
+	}
+
+	cache.add(pair);
+
+	return countPairsHelper(cache, car(pair)) + countPairsHelper(cache, cdr(pair)) + 1;	
+}
+
+function isPair(elem) {
+	return Array.isArray(elem) && elem.length === 2;
+}
+
+function cons(elem1, elem2) {
+	return [elem1, elem2];
+}
+
+function car([elem1, elem2]) {
+	return elem1;
+}
+
+function cdr([elem1, elem2]) {
+	return elem2;
+}
+
+function setCar(pair, arg) {
+	pair[0] = arg;
+}
+
+function setCdr(pair, arg) {
+	pair[1] = arg;
+}
+
+//Ex 3.18////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function isCycle(pair) {
+	const cache = new Set();
+
+	return isCycleHelper(cache, pair);
+}
+
+function isCycleHelper(cache, pair) {
+	if (cache.has(pair)) {
+		return true;
+	}
+
+	if (!isPair(pair)) {
+		return false;
+	}
+
+	cache.add(pair);
+
+	return isCycleHelper(cache, cdr(pair));
+}
+
+function makeCycle(pair) {
+	lastPair(pair)[1] = pair;
+
+	return pair;
+}
+
+function lastPair(pair) {
+	if (!isPair(cdr(pair))) {
+		return pair;
+	}
+
+	return lastPair(cdr(pair));
+}
+
+
+//Ex 3.19////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function isCycleConstantSpace(pair) {
+	if (!isPair(pair)) {
+		return false;
+	}
+
+	const slowPointer = pair;
+	const fastPointer = cdr(pair);
+
+	return isCycleConstantSpaceHelper(slowPointer, fastPointer);
+}
+
+function isCycleConstantSpaceHelper(slowPointer, fastPointer) {
+	if (!isPair(fastPointer) || !isPair(cdr(fastPointer))) {
+		return false;
+	}
+
+	if (slowPointer === fastPointer) {
+		return true;
+	}
+
+	return isCycleConstantSpaceHelper(cdr(slowPointer), cdr(cdr(fastPointer)));
+}
+
+
+//Ex 3.21////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// A Queue is defined as 2 pointers
+// The first pointer points to the start of the list while the second pointer points to the last item
+// So whenever we try to print the list we get (actual list, end pointer)
+
+function printQueue(queue) {
+	console.log(car(queue));
+}
+
+//Ex 3.22////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function makeQueue() {
+	// front is where we delete from
+	let front = [];
+
+	// rear is where we insert new elements
+	let rear;
+
+	function insert(elem) {
+		if (isEmpty()) {
+			front = [elem, []];
+			rear = front;
+		} else {
+			setCdr(rear, [elem, []]);
+			rear = cdr(rear);
+		}		
+	}
+
+	function poll() {
+		let returnElem;
+
+		if (isEmpty()) {
+			throw "Can't poll from empty queue";
+		}
+
+		returnElem = car(front);
+		front = cdr(front);
+
+		return returnElem;
+	}
+
+	function peek() {
+		if (isEmpty()) {
+			throw "Can't peek at empty queue";
+		} 
+
+		returnElem = car(front);
+		return returnElem;
+	}
+
+	function isEmpty() {
+		return front.length === 0;
+	}
+
+	return (operation, ...args) => {
+		switch (operation) {
+			case "insert":
+				insert(args[0]);
+				break;
+			case "poll":
+				return poll();
+			case "peek":
+				return peek();
+			case "isEmpty":
+				return isEmpty();
+			default:
+				throw "Operation not supported";
+		}
+	}
+}
+
+
+//Ex 3.23////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Lists in scheme are similar to singly linked lists
+// pollRear() in a singly linked list is impossible in O(1) time
+// Will need to find a way to let elements in the list point to the previous element
+
+// Possible ideas:
+    // Use a HashMap to map an elem onto its previous element
+    // Elements are node objects instead of pairs -> can have a next and a prev pointer
+        // To implement this in JS we could use triads i.e [prev, elem, next] instead of pairs
+
+function makeDeque() {
+	let front = [];
+	let rear;
+
+	function insertRear(elem) {
+		if (isEmpty()) {
+			front = [[], elem, []];
+			rear = front;
+		} else {
+			setNext(rear, [rear, elem, []]);
+			rear = next(rear);
+		}		
+	}
+
+	function insertFront(elem) {
+		if (isEmpty()) {
+			front = [[], elem, []];
+			rear = front;
+		} else {
+			const newFront = [[], elem, front];
+			setPrev(front, newFront);
+			front = newFront;
+		}
+	}
+
+	function pollRear() {
+		let returnElem;
+
+		if (isEmpty()) {
+			throw "Can't poll from empty queue";
+		}
+
+		returnElem = val(rear);
+		rear = prev(rear);
+
+		return returnElem;
+	}
+
+	function pollFront() {
+		let returnElem;
+
+		if (isEmpty()) {
+			throw "Can't poll from empty queue";
+		}
+
+		returnElem = val(front);
+		front = next(front);
+
+		return returnElem;
+	}
+	
+	function isEmpty() {
+		return front.length === 0;
+	}
+
+	// We can't print normally because it will result in an infinite cycle
+	function print() {
+		printHelper(front);
+	}
+
+	function printHelper(node) {
+		if (node.length > 0) {
+			console.log(val(node));
+			printHelper(next(node));
+		}
+	}
+
+	function prev(node) {
+		return node[0];
+	}
+
+	function next(node) {
+		return node[2];
+	}
+
+	function setPrev(node, val) {
+		node[0] = val;
+	}
+
+	function setNext(node, val) {
+		node[2] = val;
+	}
+
+	function val(node) {
+		return node[1];
+	}
+
+	return (operation, ...args) => {
+		switch (operation) {
+			case "insertRear":
+				insertRear(args[0]);
+				break;
+			case "insertFront":
+				insertFront(args[0]);
+				break;
+			case "print":
+				print();
+				break;
+			case "pollFront":
+				return pollFront();
+			case "pollRear":
+				return pollRear();
+			case "isEmpty":
+				return isEmpty();			
+			default:
+				throw "Operation not supported";
+		}
+	}
+}
+
+
+//Ex 3.24////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function makeTable(sameKey) {
+	const table = ["dummy", null];
+
+	function assoc(key, node) {
+		if (node === null) {
+			return false;
+		}
+
+		if (sameKey(car(car(node)), key)) {
+			return car(node);
+		} 
+
+		return assoc(key, cdr(node));
+	}
+	
+	function lookup(key) {
+		const record = assoc(key, cdr(table));
+
+		if (record) {
+			return cdr(record);
+		}
+
+		return false;
+	}
+
+	function insert(key, val) {
+		const record = assoc(key, cdr(table));
+
+		if (record) {
+			setCdr(record, val);
+		} else { 
+			const newNode = [key, val];
+			const newEntry = [newNode, null];
+
+			setCdr(newEntry, cdr(table));
+			setCdr(table, newEntry);		
+		}
+	}
+
+	function print() {
+		console.log(table);
+
+		printHelper(table);
+	}
+
+	function printHelper(node) {
+		if (node !== null) {
+			console.log(car(node));
+			printHelper(cdr(node));
+		}
+	}
+
+	return (operation, ...args) => {
+		switch (operation) {
+			case "lookup":
+				return lookup(args[0]);
+			case "insert":
+				insert(args[0], args[1]);
+				break;
+			case "print":
+				print();
+				break;
+			default:
+				throw "Operation not supported";
+		}
+	}
+}
+
+
+//Ex 3.25////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function makeNTable(sameKey) {
+	const table = ["dummy", null];
+	
+	function assoc(keySet, table) {
+		if (keySet.length === 0) {
+			return car(table);
+		} else {			
+			const nextTable = table("lookup", car(keySet));
+
+			if (nextTable) {
+				return assoc(cdr(keySet), nextTable);
+			}
+
+			return false;
+		}	
+	}	
+
+	function lookup(keySet) {
+		const record = assoc(keySet, cdr(table));
+
+		if (record) {
+			return cdr(record);
+		}
+
+		return false;
+	}
+
+	function insert() {
+		// Keep retrieving tables at a given key until we hit 2 base cases
+
+		// case keySet length === 1:
+			//	add new record at table
+		// case keySet length > 1
+			// keep adding new tables until we hit keySet length === 1
+	}
+
+	return (operation, keys, val) => {
+		switch (operation) {
+			case "lookup":
+				return lookup(keys);
+			case "insert":
+				insert(keys, val);
+				break;
+			case "print":
+				print();
+				break;
+			default:
+				throw "Operation not supported";
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
 
 
